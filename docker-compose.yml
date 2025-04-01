@@ -49,12 +49,12 @@ services:
             - "15432:5432"
         restart: always
         env_file:
-            - ./volumes/database/database.env
+            - /dockerdata/openelis/volumes/database/database.env
         volumes:
               # preserves the database between containers
-            - ./volumes/database/data:/var/lib/postgresql/data                
+            - /dockerdata/openelis/volumes/database/data:/var/lib/postgresql/data
               # files here will run on install
-            - ./volumes/database/dbInit:/docker-entrypoint-initdb.d
+            - /dockerdata/openelis/volumes/database/dbInit:/docker-entrypoint-initdb.d
         logging: *local-logging    
         networks:
             - openelis-network
@@ -86,11 +86,11 @@ services:
             - CATALINA_OPTS= -Ddatasource.url=jdbc:postgresql://db.openelis.org:5432/clinlims -Ddatasource.username=clinlims
         volumes:
             -  key_trust-store-volume:/etc/openelis-global
-            - ./volumes/plugins/:/var/lib/openelis-global/plugins
-            - ./volumes/tomcat/oe_server_3x.xml:/usr/local/tomcat/conf/server.xml
-            - ./volumes/logs/oeLogs:/var/lib/openelis-global/logs
-            - ./volumes/logs/tomcatLogs/:/usr/local/tomcat/logs
-            - ./volumes/properties/SystemConfiguration.properties:/var/lib/openelis-global/properties/SystemConfiguration.properties
+            - /dockerdata/openelis/volumes/plugins/:/var/lib/openelis-global/plugins
+            - /dockerdata/openelis/volumes/tomcat/oe_server_3x.xml:/usr/local/tomcat/conf/server.xml
+            - /dockerdata/openelis/volumes/logs/oeLogs:/var/lib/openelis-global/logs
+            - /dockerdata/openelis/volumes/logs/tomcatLogs/:/usr/local/tomcat/logs
+            - /dockerdata/openelis/volumes/properties/SystemConfiguration.properties:/var/lib/openelis-global/properties/SystemConfiguration.properties
             -  lucene_index-vol:/var/lib/lucene_index
             
         secrets:
@@ -124,7 +124,7 @@ services:
         logging: *local-logging                       
         volumes:
             -  key_trust-store-volume:/etc/openelis-global
-            - ./volumes/tomcat/hapi_server.xml:/opt/bitnami/tomcat/conf/server.xml
+            - /dockerdata/openelis/volumes/tomcat/hapi_server.xml:/opt/bitnami/tomcat/conf/server.xml
         secrets:
             - source: hapi_application.yaml    
 
@@ -150,7 +150,7 @@ services:
         volumes:
             - certs-vol:/etc/nginx/certs/
             - keys-vol:/etc/nginx/keys/
-            - ./volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - /dockerdata/openelis/volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
             # - /KEYSTORE_PASSWORD:/etc/nginx/private/key_pass
             # - /etc/openelis-global/nginx.cert.pem:/etc/nginx/certs/cert.crt
             # - /etc/openelis-global/nginx.key.pem:/etc/nginx/certs/cert.key
@@ -170,7 +170,7 @@ services:
     #         - "8445:8443"
     #         - "12001:12001"
     #     volumes:
-    #         - ./volumes/configuration.yml:/app/configuration.yml
+    #         - /dockerdata/openelis/volumes/configuration.yml:/app/configuration.yml
     #         -  key_trust-store-volume:/etc/openelis-global
     #     environment:
     #         SPRING_PROFILE: dev
@@ -206,11 +206,11 @@ services:
             
 secrets:
   datasource.password:
-    file: ./volumes/properties/datasource.password  
+    file: /dockerdata/openelis/volumes/properties/datasource.password
   common.properties:
-    file:  ./volumes/properties/common.properties  
+    file:  /dockerdata/openelis/volumes/properties/common.properties
   hapi_application.yaml:
-    file: ./volumes/properties/hapi_application.yaml  
+    file: /dockerdata/openelis/volumes/properties/hapi_application.yaml
 
 networks:
   openelis-network:
