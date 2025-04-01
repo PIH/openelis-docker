@@ -31,7 +31,7 @@ services:
         container_name: oe-certs 
         image: itechuw/certgen:main
         # platform: linux/amd64
-        restart: always
+        restart: unless-stopped
         environment:
             - KEYSTORE_PW="kspass"
             - TRUSTSTORE_PW="tspass"
@@ -47,7 +47,7 @@ services:
         image: postgres:14.4
         ports:
             - "15432:5432"
-        restart: always
+        restart: unless-stopped
         env_file:
             - /dockerdata/openelis/volumes/database/database.env
         volumes:
@@ -74,7 +74,7 @@ services:
         ports:
             - "8080:8080"
             - "8443:8443"
-        restart: always
+        restart: unless-stopped
         networks:
           openelis-network:
               ipv4_address: 172.20.1.121
@@ -109,7 +109,7 @@ services:
             - certs    
         networks:
             - openelis-network
-        restart: always
+        restart: unless-stopped
         environment:
           SPRING_CONFIG_LOCATION: file:///run/secrets/hapi_application.yaml
           TZ: America/New_York
@@ -135,6 +135,7 @@ services:
         # platform: linux/amd64
         networks:
             - openelis-network
+        restart: unless-stopped
         environment:
             - CHOKIDAR_USEPOLLING=true
         logging: *local-logging    
@@ -194,7 +195,7 @@ services:
         container_name: autoheal-oe
         image: willfarrell/autoheal:1.2.0
         tty: true
-        restart: always
+        restart: unless-stopped
         networks:
             - openelis-network
         environment:
